@@ -1,0 +1,33 @@
+create folder in theme folder
+    1. create file style.css,functions.php,screenshot.png
+    2. add code in functions.php    
+        <?php
+
+        function my_child_theme_enqueue_styles(){
+            //load parent theme stylesheet first
+            wp_enqueue_style('parent-style',get_template_directory_uri().'/style.css');
+            //load child theme stylesheet
+            wp_enqueue_style('child-style',get_stylesheet_uri(),array('parent-style'));
+        }
+
+        add_action('wp_enqueue_scripts','my_child_theme_enqueue_styles');
+
+        ?>
+
+    3. add child-theme-info in style.css
+        /*
+            Theme Name: GeneratePress-Child
+            Theme URI: https://generatepress.com
+            Author: Varun Narvariya
+            Author URI: https://tomusborne.com
+            Description: Modify Parent Theme.
+            Template:GeneratePress
+            Version: 1.1.0
+            Requires at least: 6.2
+            Tested up to: 6.4
+            Requires PHP: 8.2
+            License: GNU General Public License v2 or later
+            License URI: http://www.gnu.org/licenses/gpl-2.0.html
+            Text Domain: generatepress
+            Tags: two-columns, three-columns
+            */

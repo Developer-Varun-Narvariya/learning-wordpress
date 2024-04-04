@@ -1,0 +1,177 @@
+What is Hook
+Action Hook - triggered at specific time
+Filter Hook - modify wordpress data before send to database or the brower
+
+SYNTAX TO HOOK WORDPRESS ACTION
+add_action($tag, $function_to_add, $priority, $accepted_args);
+
+SYNTAX TO HOOK WORDPRESS FILTER
+add_filter($tag, $function_to_add, $priority, $accepted_args);
+
+
+
+
+
+ACTIONS
+
+# add_action('init','name_of_the_function'); - run when plugin activate
+
+
+widgets_init
+# add_action('widgets_init','name_of_the_function'); - run when plugin activate or widget activate
+register_sidebar  - create sidebar
+dynamic_sidebar   - distplay Sidebar
+
+
+# add_action('admin_menu','name_of_the_function') - run when admin menu initailize.
+    add_menu_page("Varun Playlist","Varun Playlist","manage_options","varun-playlist","varun_playlist_fn");
+    add_submenu_page("varun-playlist","Submenu 1","Submenu 1","manage_options","submenu-1","varun_submenu1_fn");
+
+
+#add_action('wp_enqueue_scripts','name_of_the_function'); - add css js or assets to frontend
+        wp_enqueue_style('varun-css',plugin_dir_url(__FILE__)."assets/js/varun-front.css");
+        wp_enqueue_script('varun-js',plugin_dir_url(__FILE__)."assets/js/varun-front.js");
+
+#add_action('admin_enqueue_scripts','name_of_the_function'); - - add css js or assets to admin side 
+        wp_enqueue_script('varun-js',plugin_dir_url(__FILE__)."assets/js/varun-admin.js");
+        wp_enqueue_style('varun-css',plugin_dir_url(__FILE__)."assets/js/varun-admin.css");
+
+
+# add_action('admin_bar_menu', 'name_of_the_function', priority); - add menu in admin top bar 
+        add_action('admin_bar_menu', 'varun_custom_bar_menu', 999);
+
+        function varun_custom_bar_menu($wp_admin_bar) - predefined to call add node type functions
+        {
+            $args = array(
+                'id' => 'varun-wordpress-blog',
+                'title' => 'Developer Wordpress',
+                'href' => 'https://developer.wordpress.org/',
+                'meta' => array(
+                    'class' => 'varun-wordpress-blog',
+                    'target' => '_blank'
+                )
+            );
+            $wp_admin_bar->add_node($args);
+
+            $submenu1 = array(
+                'id' => 'varun-wordpress-action',
+                'title' => 'ACTIONS',
+                'href' => 'https://developer.wordpress.org/plugins/hooks/actions/',
+                'meta' => array(
+                    'class' => 'varun-wordpress-action',
+                    'target' => '_blank'
+                ),
+                'parent' => 'varun-wordpress-blog'
+            );
+
+            $wp_admin_bar->add_node($submenu1);
+
+            $submenu2 = array(
+                'id' => 'varun-wordpress-filter',
+                'title' => 'FILTERS',
+                'href' => 'https://developer.wordpress.org/plugins/hooks/filters/',
+                'meta' => array(
+                    'class' => 'varun-wordpress-filter',
+                    'target' => '_blank'
+                ),
+                'parent' => 'varun-wordpress-blog'
+
+            );
+
+            $wp_admin_bar->add_node($submenu2);
+        }
+
+
+
+# add_action('admin_notices','name_of_the_function'); - admin notice to show message in admin panel
+
+        
+        function varun_admin_notice(){
+            
+        <div class="notice notice-error"> 
+        <div class="notice notice-success is-dismissible"> 
+        <div class="notice notice-warning is-dismissible"> 
+        is-dismissible - class provide close icon in messgae 
+        <div class="notice notice-info is-dismissible">
+            <p>Welcome to the Admin Panel</p>
+        </div>
+        }
+
+        add_action('admin_notices','varun_admin_notice')
+
+
+
+
+
+#add_action('add_meta_boxes','name_of_the_function'); - use to add meta boxes like post side boxes
+            add_meta_box - to define and add meta box           
+
+            function varun_make_meta_box(){
+                add_meta_box('varun-meta-box','Varun Custom Box','varun_meta_box_fn','post','side','default');
+            }
+
+            function varun_meta_box_fn(){
+                echo "Custom Meta Box in Post Page";
+            
+                    <br />
+                    <br />
+                    
+                    <div>
+                        <label for="name">Name</label>
+                        <br />
+                        <input type="text" name="txtname" id="txtname" placeholder="Enter Name">
+                    </div>
+
+            }
+
+            add_action('add_meta_boxes','varun_make_meta_box');
+    
+
+
+
+
+
+#add_action('save_post','name_of_function'); - when post save it works (take input value and save from update_post_meta function)
+
+    update_post_meta($post_id,'key_save_in_db',$request_value_from_input_field);
+
+            function varun_save_meta_box_value($post_id){
+            $varun_mbx_name = isset($_REQUEST['varun_mbx_name']) ? trim($_REQUEST['varun_mbx_name']) : "";
+            if(!empty($varun_mbx_name)){
+                update_post_meta($post_id,'varun_mbx_value',$varun_mbx_name);
+            }
+        }
+
+
+
+        show the value
+        input type="text" name="varun_mbx_name" id="varun_mbx_name" placeholder="Enter Name" value="echo get_post_meta($post->ID,'varun_mbx_value',true);"
+
+
+
+
+#login_enqueue_scripts - to add css and script file in login page of admin panel
+    add_action('login_enqueue_scripts', 'name_of_the_function');
+        wp_enqueue_script('varun-admin-login-js', plugin_dir_url(__FILE__) . "assets/js/varun-admin-login.js");
+        wp_enqueue_style('varun-admin-login-css', plugin_dir_url(__FILE__) . "assets/css/varun-admin-login.css");
+
+
+
+
+#wp_head & wp_footer 
+        add_action('wp_footer','name_of_the_function');
+        add_action('wp_head','name_of_the_function');
+
+        function varun_head_file_css(){
+            echo "<link rel='stylesheet' href='".plugin_dir_url(__FILE__)."assets/css/header-varun.css'>";
+        }
+
+        function varun_footer_file_js(){
+            echo '<script scr="'.plugin_dir_url(__FILE__).'assets/js/footer-varun.js"></script>';
+        }
+
+
+#login_form - add fields in login form 
+        add_action('login_form');
+
+        

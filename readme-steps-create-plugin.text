@@ -1,0 +1,26 @@
+create plugin folder and file with same name and define plugin
+
+HOOKS
+
+with the help of HOOKS customize feature and customize 
+
+HOOKS - ACTIONS & FILTERS
+
+    ACTIONS - to add code
+    FILTERS - before wordpress browser and before add in database
+
+    add_action(hook,function_to_add,priority,accepted_args)
+
+    FILTERS
+    add_filter(tag,function_to_add,priority,accepted_args);
+
+    wordpress 200 hooks around
+
+Example - just working
+
+
+
+Create directory in plugin folder
+    assets folder - js,css
+    inc folder
+
